@@ -4,10 +4,51 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<h2>Login</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Login</button>
-</form>
+
+<div class="container-fluid">
+  <div class="row no-gutter">
+    <div class="d-none d-md-flex col-md-4 col-lg-6 bg-image"></div>
+    <div class="col-md-8 col-lg-6">
+      <div class="login d-flex align-items-center py-5">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-9 col-lg-8 mx-auto">
+              <h3 class="login-heading mb-4">Login</h3>
+              <form method="post" action="{% url 'login' %}">
+                  {% csrf_token %}
+                  {{ form.non_field_errors }}
+                <div class="form-label-group">
+                    {{ form.username.errors }}
+                  <input type="text" id="{{ form.username.id_for_label }}" 
+                          name="{{ form.username.name }}"
+                          class="form-control" placeholder="Username" 
+                          {% if form.username.value != None %} 
+                          value="{{ form.username.value|stringformat:'s' }}"
+                          {% endif %} 
+                          maxlength="{{ form.username.field.max_length }}" 
+                          required autofocus>
+                  <label for="{{ form.username.id_for_label }}">Username</label>
+                </div>
+
+                <div class="form-label-group">
+                    {{ form.password.errors }}
+                  <input type="password" id="{{ form.password.id_for_label }}" 
+                          name="{{ form.password.name }}"
+                          class="form-control" placeholder="Password" 
+                          maxlength="{{ form.password.field.max_length }}" 
+                          required autofocus>
+                  <label for="{{ form.password.id_for_label }}">Password</label>
+                </div>
+
+                <button class="btn btn-lg btn-primary btn-block btn-login text-uppercase font-weight-bold mb-2" type="submit">Sign in</button>
+                <div class="text-center">
+                  <a class="small" href="{% url 'password_reset' %}">Forgot password?</a></div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

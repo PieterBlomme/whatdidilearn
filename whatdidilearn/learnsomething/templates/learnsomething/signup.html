@@ -2,10 +2,72 @@
 
 {% block title %}Create an Account{% endblock %}
 {% block content %}
-  <h2>Sign up</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Sign up</button>
-  </form>
+  <div class="container-fluid">
+        <div class="row no-gutter">
+          <div class="d-none d-md-flex col-md-4 col-lg-6 bg-image"></div>
+          <div class="col-md-8 col-lg-6">
+            <div class="login d-flex align-items-center py-5">
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-9 col-lg-8 mx-auto">
+                    <h3 class="login-heading mb-4">Register</h3>
+                    <form method="post" action="{% url 'signup' %}">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                      <div class="form-label-group">
+                          {{ form.username.errors }}
+                        <input type="text" id="{{ form.username.id_for_label }}" 
+                                name="{{ form.username.name }}"
+                                class="form-control" placeholder="Username" 
+                                {% if form.username.value != None %} 
+                                value="{{ form.username.value|stringformat:'s' }}"
+                                {% endif %} 
+                                maxlength="{{ form.username.field.max_length }}" 
+                                required autofocus>
+                        <label for="{{ form.username.id_for_label }}">Username</label>
+                      </div>
+
+                      <div class="form-label-group">
+                            {{ form.email.errors }}
+                          <input type="email" id="{{ form.email.id_for_label }}" 
+                                  name="{{ form.email.name }}"
+                                  class="form-control" placeholder="Email" 
+                                  {% if form.email.value != None %} 
+                                  value="{{ form.email.value|stringformat:'s' }}"
+                                  {% endif %} 
+                                  maxlength="{{ form.email.field.max_length }}" 
+                                  required autofocus>
+                          <label for="{{ form.email.id_for_label }}">Email</label>
+                        </div>
+      
+                      <div class="form-label-group">
+                          {{ form.password1.errors }}
+                        <input type="password" id="{{ form.password1.id_for_label }}" 
+                                name="{{ form.password1.name }}"
+                                class="form-control" placeholder="Password" 
+                                maxlength="{{ form.password1.field.max_length }}" 
+                                required autofocus>
+                        <label for="{{ form.password1.id_for_label }}">Password</label>
+                      </div>
+      
+                      <div class="form-label-group">
+                            {{ form.password2.errors }}
+                          <input type="password" id="{{ form.password2.id_for_label }}" 
+                                  name="{{ form.password2.name }}"
+                                  class="form-control" placeholder="Password" 
+                                  maxlength="{{ form.password2.field.max_length }}" 
+                                  required autofocus>
+                          <label for="{{ form.password2.id_for_label }}">Repeat password</label>
+                        </div>
+
+                      <button class="btn btn-lg btn-primary btn-block btn-login text-uppercase font-weight-bold mb-2" type="submit">Sign up</button>
+                      <div class="text-center">
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 {% endblock %}
