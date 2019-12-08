@@ -2,6 +2,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from .forms import RegisterForm
+from .models import *
 
 def signup(request):
     if request.method == 'POST':
@@ -16,3 +17,7 @@ def signup(request):
     else:
         form = RegisterForm()
     return render(request, 'learnsomething/signup.html', {'form': form})
+
+def home(request):
+    articles = Article.objects.all()
+    return render(request, 'learnsomething/home.html', {'articles': articles})
