@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class Article(models.Model):
     url = models.URLField(unique=True, max_length=1000)
     title = models.CharField(max_length=1000)
+    authors = models.CharField(max_length=1000, default="")
     date = models.DateField()
 
 class Tag(models.Model):

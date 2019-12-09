@@ -19,5 +19,7 @@ def signup(request):
     return render(request, 'learnsomething/signup.html', {'form': form})
 
 def home(request):
+    if request.method == 'POST':
+        print(request.POST)
     articles = Article.objects.all()
     return render(request, 'learnsomething/home.html', {'articles': articles})

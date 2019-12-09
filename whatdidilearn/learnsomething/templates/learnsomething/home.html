@@ -1,46 +1,41 @@
 <!-- templates/home.html-->
 {% extends 'base.html' %} {% block title %}Home{% endblock %} {% block content %}
 <!-- Search form -->
+<form>
 <div class="row mt-3">
   <div class="col-lg-6 md-6 sm-4 ">
     <input type="text" class="form-control" placeholder="Search title" required autofocus name="search_article" id="search_article">
   </div>
   <div class="col-lg-6 md-6 sm-4 ">
     <div class="text-right">
-      <button class="btn btn-primary" id="search_article_button" title="Search">Search</button>
+      <button class="btn btn-primary" id="search_article_button" title="Search" type="submit">Search</button>
     </div>
   </div>
 </div>
-<div class="row mt-3">
-  <div class="col-lg-6 md-6 sm-4 ">
-    <input type="text" class="form-control" placeholder="Search author" required autofocus name="search_author" id="search_author">
-  </div>
-  <div class="col-lg-6 md-6 sm-4 ">
-    <div class="text-right">
-      <button class="btn btn-primary" id="search_author_button" title="Search">Search</button>
-    </div>
-  </div>
-</div>
+</form>
+<form>
 <div class="row mt-3">
   <div class="col-lg-6 md-6 sm-4 ">
     <input type="text" class="form-control" placeholder="Search tag" required autofocus name="search_tag" id="search_tag">
   </div>
   <div class="col-lg-6 md-6 sm-4 ">
     <div class="text-right">
-      <button class="btn btn-primary" id="search_tag_button" title="Search">Search</button>
+      <button class="btn btn-primary" id="search_tag_button" title="Search" type="submit">Search</button>
     </div>
   </div>
 </div>
+</form><form>
 <div class="row mt-3">
   <div class="col-lg-6 md-6 sm-4 ">
     <input type="text" class="form-control" placeholder="Search benchmark" required autofocus name="search_benchmark" id="search_benchmark">
   </div>
   <div class="col-lg-6 md-6 sm-4 ">
     <div class="text-right">
-      <button class="btn btn-primary" id="search_benchmark_button" title="Search">Search</button>
+      <button class="btn btn-primary" id="search_benchmark_button" title="Search" type="submit">Search</button>
     </div>
   </div>
 </div>
+</form>
 
 <hr>
 <div class="custom-control custom-checkbox">
@@ -50,13 +45,18 @@
 
 {% for article in articles %}
 <div class="row mt-3">
-  <div class="card h-100">
+  <div class="card h-100 w-100">
     <div class="card-body">
-      <button class="btn btn-primary" id="library_save_{{ article.id }}" title="Save"> Save</button>
-
-      <a href="{{ article.id }}">
-        {{ article.title }} - {{ article.date }}
-      </a>
+      <div class="col-lg-10 md-10 sm-10 ">
+        <a href="{{ article.id }}">
+          {{ article.title }}
+          <br> {{ article.authors}}
+          <br> {{ article.date }}
+        </a>
+      </div>
+      <div class="col-lg-2 md-2 sm-2 ">
+        <button class="btn btn-primary" id="library_save_{{ article.id }}" title="Save"> Save</button>
+      </div>
     </div>
 
   </div>
