@@ -19,7 +19,17 @@ def signup(request):
     return render(request, 'learnsomething/signup.html', {'form': form})
 
 def home(request):
+    checkbox_val = "false"
     if request.method == 'POST':
-        print(request.POST)
-    articles = Article.objects.all()
-    return render(request, 'learnsomething/home.html', {'articles': articles})
+        print(request.POST['mylibrary_post'])
+        checkbox_val = request.POST['mylibrary_post']
+
+        if 'search_article' in request.POST:
+            search_string = request.POST['search_article']
+            articles = Article.objects.filter(title__icontains=search_string) | Article.objects.filter(authors__icontains=search_string)
+    else:
+        articles = Article.objects.all()
+
+    return render(request, 'learnsomething/home.html', {'articles': articles, 
+                                                        'checkbox' : checkbox_val #send it back
+                                                        })

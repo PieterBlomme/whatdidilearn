@@ -1,45 +1,67 @@
 <!-- templates/home.html-->
 {% extends 'base.html' %} {% block title %}Home{% endblock %} {% block content %}
+<!--checkbox change-->
+<script>
+$(document).ready(function() {
+  $('#mylibrary').change(function() {
+    if(this.checked)
+    {
+      $("#mylibrary_post").val(true);     
+    }
+    else
+    {
+      $("#mylibrary_post").val(false);       
+    }
+  });
+});
+</script>
 <!-- Search form -->
-<form>
-<div class="row mt-3">
-  <div class="col-lg-6 md-6 sm-4 ">
-    <input type="text" class="form-control" placeholder="Search title" required autofocus name="search_article" id="search_article">
-  </div>
-  <div class="col-lg-6 md-6 sm-4 ">
-    <div class="text-right">
-      <button class="btn btn-primary" id="search_article_button" title="Search" type="submit">Search</button>
+<form method="post" action="{% url 'home' %}">
+  {% csrf_token %} {{ form.non_field_errors }}
+  <div class="row mt-3">
+    <div class="col-lg-6 md-6 sm-4 ">
+      <input type="text" class="form-control" placeholder="Search title" required autofocus name="search_article" id="search_article">
+      <input type="hidden" id="mylibrary_post" name="mylibrary_post" value={{ checkbox }}>
+    </div>
+    <div class="col-lg-6 md-6 sm-4 ">
+      <div class="text-right">
+        <button class="btn btn-primary" id="search_article_button" title="Search" type="submit">Search</button>
+      </div>
     </div>
   </div>
-</div>
 </form>
-<form>
-<div class="row mt-3">
-  <div class="col-lg-6 md-6 sm-4 ">
-    <input type="text" class="form-control" placeholder="Search tag" required autofocus name="search_tag" id="search_tag">
-  </div>
-  <div class="col-lg-6 md-6 sm-4 ">
-    <div class="text-right">
-      <button class="btn btn-primary" id="search_tag_button" title="Search" type="submit">Search</button>
+<form method="post" action="{% url 'home' %}">
+  {% csrf_token %} {{ form.non_field_errors }}
+  <div class="row mt-3">
+    <div class="col-lg-6 md-6 sm-4 ">
+      <input type="text" class="form-control" placeholder="Search tag" required autofocus name="search_tag" id="search_tag">
+      <input type="hidden" id="mylibrary_post" name="mylibrary_post" value={{ checkbox }}>
+    </div>
+    <div class="col-lg-6 md-6 sm-4 ">
+      <div class="text-right">
+        <button class="btn btn-primary" id="search_tag_button" title="Search" type="submit">Search</button>
+      </div>
     </div>
   </div>
-</div>
-</form><form>
-<div class="row mt-3">
-  <div class="col-lg-6 md-6 sm-4 ">
-    <input type="text" class="form-control" placeholder="Search benchmark" required autofocus name="search_benchmark" id="search_benchmark">
-  </div>
-  <div class="col-lg-6 md-6 sm-4 ">
-    <div class="text-right">
-      <button class="btn btn-primary" id="search_benchmark_button" title="Search" type="submit">Search</button>
+</form>
+<form method="post" action="{% url 'home' %}">
+  {% csrf_token %} {{ form.non_field_errors }}
+  <div class="row mt-3">
+    <div class="col-lg-6 md-6 sm-4 ">
+      <input type="text" class="form-control" placeholder="Search benchmark" required autofocus name="search_benchmark" id="search_benchmark">
+      <input type="hidden" id="mylibrary_post" name="mylibrary_post" value={{ checkbox }}>
+    </div>
+    <div class="col-lg-6 md-6 sm-4 ">
+      <div class="text-right">
+        <button class="btn btn-primary" id="search_benchmark_button" title="Search" type="submit">Search</button>
+      </div>
     </div>
   </div>
-</div>
 </form>
 
 <hr>
 <div class="custom-control custom-checkbox">
-  <input type="checkbox" class="custom-control-input" id="mylibrary" checked>
+  <input type="checkbox" class="custom-control-input" id="mylibrary" {% if checkbox == "true" %} checked {% endif %}>
   <label class="custom-control-label" for="mylibrary">My library</label>
 </div>
 
