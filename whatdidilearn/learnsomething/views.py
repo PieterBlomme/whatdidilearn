@@ -1,6 +1,7 @@
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic.base import View
 from .forms import RegisterForm
 from .models import *
 
@@ -33,3 +34,10 @@ def home(request):
     return render(request, 'learnsomething/home.html', {'articles': articles, 
                                                         'checkbox' : checkbox_val #send it back
                                                         })
+
+class ArticleDetailView(View):
+    def get(self, request, *args, **kwargs):
+        article = get_object_or_404(Article, pk=kwargs['pk'])
+        tags = Tag.objects.filter(paper_id=article)
+        context = {'article': article, 'tags' : tags}
+        return render(request, 'learnsomething/article_detail.html', context)

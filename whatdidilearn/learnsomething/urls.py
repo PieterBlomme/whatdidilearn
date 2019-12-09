@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from django.urls import path
 from learnsomething import views
 from django.contrib.auth import views as auth_views
 from django.views.generic.base import TemplateView # new
@@ -10,5 +11,6 @@ urlpatterns = [
     url(r'^reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     url(r'^reset_done/$', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     url(r'^signup/$', views.signup, name='signup'),
-    url(r'home', views.home, name='home') #TODO: make sure URL only works for home page (separate app?)
+    url(r'home', views.home, name='home'), #TODO: make sure URL only works for home page (separate app?)
+    path('<str:pk>/', views.ArticleDetailView.as_view(), name='detail'),
 ]

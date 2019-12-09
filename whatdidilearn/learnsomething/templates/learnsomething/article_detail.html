@@ -1,0 +1,58 @@
+<!-- templates/home.html-->
+{% extends 'base.html' %} {% block title %}Home{% endblock %} {% block content %}
+<!--checkbox change-->
+<script>
+  $(document).ready(function () {
+    $('#mylibrary').change(function () {
+      if (this.checked) {
+        $("#mylibrary_post").val(true);
+      }
+      else {
+        $("#mylibrary_post").val(false);
+      }
+    });
+  });
+</script>
+
+<div class="row mt-3">
+  <div class="card h-100 w-100">
+    <div class="card-body">
+      <div class="col-lg-10 md-10 sm-10 ">
+        {{ article.title }}
+        <br> {{ article.authors}}
+        <br>
+        <a href="{{ article.url}}"> {{ article.url }}</a>
+        <br> {{ article.date }}
+      </div>
+      <div class="col-lg-2 md-2 sm-2 ">
+        <button class="btn btn-primary" id="library_save_{{ article.id }}" title="Save"> Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-3">
+  {% for tag in tags %}
+  <div class="col-lg-2 md-2 sm-2 ">
+    <div class="card h-100 w-100">
+      <div class="card-body">
+        {{ tag.tag }}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  <div class="col-lg-2 md-2 sm-2 ">
+      <div class="card h-100 w-100">
+        <div class="card-body">
+          <form>
+              <input type="text" class="form-control" placeholder="Add tag" required autofocus name="add_tag" id="add_tag">
+              <br>
+              <button class="btn btn-primary" id="" title="Add">Add</button>
+          </form>
+        </div>
+      </div>
+    </div>
+</div>
+
+</div>
+{% endblock %}
