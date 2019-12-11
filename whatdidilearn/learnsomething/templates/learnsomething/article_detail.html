@@ -18,21 +18,21 @@
 
 <div class="row mt-3">
   {% for tag in tags %}
-  <div class="col-2">
-    <div class="card h-75 w-100">
-      <div class="card-body">
+  <div class="col-1">
+    
         <form>
+
           <button type="button" class="close" aria-label="Close" id="tag_delete{{ tag.id}}}">
             <span aria-hidden="true">&times;</span>
+            
           </button>
-          <p>{{ tag.tag }}</p>
+          <span class="badge badge-primary">{{tag.tag}}</span>
+
         </form>
-      </div>
-    </div>
   </div>
   {% endfor %}
   <div class="col-3 ">
-    <div class="card h-75 w-100">
+    <div class="card h-100 w-100">
       <div class="card-body">
         <form>
           <div class="input-group">
