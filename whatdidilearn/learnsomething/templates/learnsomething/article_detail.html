@@ -1,58 +1,134 @@
 <!-- templates/home.html-->
-{% extends 'base.html' %} {% block title %}Home{% endblock %} {% block content %}
-<!--checkbox change-->
-<script>
-  $(document).ready(function () {
-    $('#mylibrary').change(function () {
-      if (this.checked) {
-        $("#mylibrary_post").val(true);
-      }
-      else {
-        $("#mylibrary_post").val(false);
-      }
-    });
-  });
-</script>
+{% extends 'base.html' %} {% block title %}Detail{% endblock %} {% block content %}
 
 <div class="row mt-3">
   <div class="card h-100 w-100">
     <div class="card-body">
-      <div class="col-lg-10 md-10 sm-10 ">
-        {{ article.title }}
-        <br> {{ article.authors}}
-        <br>
-        <a href="{{ article.url}}"> {{ article.url }}</a>
-        <br> {{ article.date }}
+      {{ article.title }}
+      <br> {{ article.authors}}
+      <br>
+      <a href="{{ article.url}}"> {{ article.url }}</a>
+      <br> {{ article.date }}
+    </div>
+  </div>
+</div>
+
+<hr>
+
+
+<div class="row mt-3">
+  {% for tag in tags %}
+  <div class="col-2">
+    <div class="card h-75 w-100">
+      <div class="card-body">
+        <form>
+          <button type="button" class="close" aria-label="Close" id="tag_delete{{ tag.id}}}">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <p>{{ tag.tag }}</p>
+        </form>
       </div>
-      <div class="col-lg-2 md-2 sm-2 ">
-        <button class="btn btn-primary" id="library_save_{{ article.id }}" title="Save"> Save</button>
+    </div>
+  </div>
+  {% endfor %}
+  <div class="col-3 ">
+    <div class="card h-75 w-100">
+      <div class="card-body">
+        <form>
+          <div class="input-group">
+            <input type="text" class="form-control input-sm" placeholder="Add tag" required autofocus name="add_tag" id="add_tag">
+            <span class="input-group-btn-sm">
+              <button class="btn btn-primary btn-sm" id="" title="Add">Add</button>
+            </span>
+          </div>
+
+        </form>
       </div>
     </div>
   </div>
 </div>
 
+<hr>
+
 <div class="row mt-3">
-  {% for tag in tags %}
-  <div class="col-lg-2 md-2 sm-2 ">
-    <div class="card h-100 w-100">
-      <div class="card-body">
-        {{ tag.tag }}
-      </div>
-    </div>
-  </div>
-  {% endfor %}
-  <div class="col-lg-2 md-2 sm-2 ">
-      <div class="card h-100 w-100">
+  <div class="col-7 ">
+    <input type="checkbox" class="custom-control-input" "comment_checkbox" id="comment_checkbox">
+    <label class="custom-control-label" for="comment_checkbox">Show comments from others</label>
+    {% for comment in comments %}
+    <div class="row mt-3">
+      <div class="card">
         <div class="card-body">
           <form>
-              <input type="text" class="form-control" placeholder="Add tag" required autofocus name="add_tag" id="add_tag">
-              <br>
-              <button class="btn btn-primary" id="" title="Add">Add</button>
+            <button type="button" class="close" aria-label="Close" id="comment_delete_{{ comment.id}}}">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4>{{ comment.title}}</h4>
+            <p>{{ comment.text }}</p>
+            <a href="{{ comment.code_url}}">{{ comment.code_url }}</a>
           </form>
         </div>
       </div>
     </div>
-</div>
+    {% endfor %}
+    <div class="row mt-3">
+      <div class="card h-100 w-100">
+        <div class="card-body">
+          <form>
+            <p>
+              <input type="text" class="form-control input-lg" placeholder="Title" required autofocus>
+              <textarea class="form-control rounded-0" id="exampleFormControlTextarea1" rows="10" placeholder="Enter comment here"></textarea>
+              <input type="url" class="form-control input-lg" placeholder="Code URL" required autofocus>
+            </p>
+            <button class="btn btn-primary btn-sm" id="" title="Add">Add</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-1 ">
+    <div class="row">
+    </div>
+  </div>
+
+
+  <div class="col-4 ">
+    <input type="checkbox" class="custom-control-input" "benchmark_checkbox" id="benchmark_checkbox">
+    <label class="custom-control-label" for="benchmark_checkbox">Show benchmarks from others</label>
+    {% for benchmark in benchmarks %}
+    <div class="row mt-3">
+      <div class="card">
+        <div class="card-body">
+          <form>
+            <button type="button" class="close" aria-label="Close" id="benchmark_delete_{{ benchmark.id}}}">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4>{{ benchmark.dataset}}</h4>
+            {{ benchmark.score|floatformat }} %
+            <a href="{{ comment.code_url}}">{{ benchmark.code_url }}</a>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+    <div class="row mt-3">
+      <div class="card h-100 w-100">
+        <div class="card-body">
+          <form>
+            <p>
+              <input type="text" class="form-control" placeholder="Dataset" required autofocus>
+              <input type="number" class="form-control" placeholder="Score" required autofocus>
+              <input type="url" class="form-control input-lg" placeholder="Code URL" required autofocus>
+            </p>
+            <button class="btn btn-primary btn-sm" id="" title="Add">Add</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 
 </div>
 {% endblock %}
