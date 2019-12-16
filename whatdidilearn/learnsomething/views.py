@@ -68,4 +68,4 @@ class ArticleDetailView(View):
         benchmarks = Benchmark.objects.filter(paper_id=article)
         comments = Comment.objects.filter(paper_id=article)
         context = {'article': article, 'tags' : tags, 'benchmarks' : benchmarks, 'comments' : comments}
-        return render(request, 'learnsomething/article_detail.html', context)
+        return render(request, 'learnsomething/detail.html', context)

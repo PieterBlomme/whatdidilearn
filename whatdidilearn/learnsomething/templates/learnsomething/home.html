@@ -62,7 +62,7 @@
   <div class="card h-100 w-100">
     <div class="card-body">
       <p>
-        <a href="{{ article.id }}">
+        <a href="{% url 'detail' pk=article.id %}">
           {{ article.title }}
           <br> {{ article.authors}}
           <br> {{ article.date }}
