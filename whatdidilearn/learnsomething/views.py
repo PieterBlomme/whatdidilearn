@@ -72,7 +72,10 @@ def add_tag(request):
             tag_item = Tag(paper=paper, user=user, tag=tag)
             tag_item.save()
 
-    return redirect('detail', pk=pk)
+        return redirect('detail', pk=pk)
+
+    else:
+        return redirect('home')
 
 @login_required
 def add_benchmark(request):
@@ -89,8 +92,8 @@ def add_benchmark(request):
         if not Benchmark.objects.filter(paper=paper).filter(user=user).filter(dataset=dataset).exists():
             benchmark_item = Benchmark(paper=paper, user=user, dataset=dataset, score=score, code_url=url)
             benchmark_item.save()
-
     return redirect('detail', pk=pk)
+
 
 @login_required
 def add_comment(request):
@@ -107,6 +110,34 @@ def add_comment(request):
         comment_item.save()
 
     return redirect('detail', pk=pk)
+
+
+@login_required
+def delete_tag(request, pk_paper, pk):
+    tag = get_object_or_404(Tag, pk=pk)
+
+    if (tag.user == request.user): # Safety check: only for given user
+        tag.delete()
+
+    return redirect('detail', pk=pk_paper)
+
+@login_required
+def delete_benchmark(request, pk_paper, pk):
+    benchmark = get_object_or_404(Benchmark, pk=pk)
+
+    if (benchmark.user == request.user): # Safety check: only for given user
+        benchmark.delete()
+
+    return redirect('detail', pk=pk_paper)
+
+@login_required
+def delete_comment(request, pk_paper, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+
+    if (comment.user == request.user): # Safety check: only for given user
+        comment.delete()
+
+    return redirect('detail', pk=pk_paper)
 
 class ArticleDetailView(View):
     def get(self, request, *args, **kwargs):
