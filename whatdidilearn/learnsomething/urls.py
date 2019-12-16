@@ -14,5 +14,8 @@ urlpatterns = [
     path('home/lib/', views.home_library, name='home_library'),
     path('home/', views.home, name='home'), #TODO: make sure URL only works for home page (separate app?)
     url(r'library', views.add_to_lib, name='add to library'),
+    url(r'tag', views.add_tag, name='add tag'),
+    url(r'benchmark', views.add_benchmark, name='add benchmark'),
+    url(r'comment', views.add_comment, name='add comment'),
     path('<str:pk>/', views.ArticleDetailView.as_view(), name='detail'),
 ]

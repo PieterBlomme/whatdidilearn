@@ -58,6 +58,56 @@ def add_to_lib(request):
 
     return redirect('detail', pk=pk)
 
+@login_required
+def add_tag(request):
+    if request.method == 'POST':
+        pk = request.POST['pk']
+        tag = request.POST['tag']
+
+        paper = get_object_or_404(Article, pk=pk)
+        user = request.user
+
+        #No duplicates
+        if not Tag.objects.filter(paper=paper).filter(user=user).filter(tag=tag).exists():
+            tag_item = Tag(paper=paper, user=user, tag=tag)
+            tag_item.save()
+
+    return redirect('detail', pk=pk)
+
+@login_required
+def add_benchmark(request):
+    if request.method == 'POST':
+        pk = request.POST['pk']
+        dataset = request.POST['dataset']
+        score = request.POST['score']
+        url = request.POST['url']
+
+        paper = get_object_or_404(Article, pk=pk)
+        user = request.user
+
+        #No duplicates
+        if not Benchmark.objects.filter(paper=paper).filter(user=user).filter(dataset=dataset).exists():
+            benchmark_item = Benchmark(paper=paper, user=user, dataset=dataset, score=score, code_url=url)
+            benchmark_item.save()
+
+    return redirect('detail', pk=pk)
+
+@login_required
+def add_comment(request):
+    if request.method == 'POST':
+        pk = request.POST['pk']
+        title = request.POST['title']
+        text = request.POST['text']
+        url = request.POST['url']
+
+        paper = get_object_or_404(Article, pk=pk)
+        user = request.user
+
+        comment_item = Comment(paper=paper, user=user, title=title, text=text, code_url=url)
+        comment_item.save()
+
+    return redirect('detail', pk=pk)
+
 class ArticleDetailView(View):
     def get(self, request, *args, **kwargs):
         article = get_object_or_404(Article, pk=kwargs['pk'])

@@ -3,14 +3,14 @@
 
 <!--close events-->
 <script>
-    $(document).ready(function () {
-      $('button.close').click(function () {
-        var res = this.id.split("_");
-        console.log(res);
-        window.location.href = `./${res[0]}_${res[1]}/${res[2]}`;
-      });
+  $(document).ready(function () {
+    $('button.close').click(function () {
+      var res = this.id.split("_");
+      console.log(res);
+      window.location.href = `./${res[0]}_${res[1]}/${res[2]}`;
     });
-  </script>
+  });
+</script>
 
 <div class="row mt-3">
   <div class="card h-100 w-100">
@@ -36,19 +36,18 @@
 <div class="row mt-3">
   {% for tag in tags %}
   <div class="col-1">
-
-    <form>
-      <button type="button" class="close" aria-label="Close" id="tag_delete_{{ tag.id }}">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <span class="badge badge-primary">{{tag.tag}}</span>
-    </form>
+    <button type="button" class="close" aria-label="Close" id="tag_delete_{{ tag.id }}">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <span class="badge badge-primary">{{tag.tag}}</span>
   </div>
   {% endfor %}
   <div class="col-2 ">
-    <form>
+    <form method="post" action="{% url 'add tag' %}">
+      {% csrf_token %} {{ form.non_field_errors }}
       <div class="row mt-3"></div>
-      <input type="text" class="form-control input-sm" placeholder="Add tag" required autofocus name="add_tag" id="add_tag">
+      <input type="hidden" id="pk" name="pk" value={{ article.id }}>
+      <input type="text" class="form-control input-sm" placeholder="Add tag" required autofocus name="tag" id="tag">
       <button class="btn btn-primary btn-sm" id="" title="Add">Add</button>
 
     </form>
@@ -65,14 +64,12 @@
     <div class="row mt-3">
       <div class="card">
         <div class="card-body">
-          <form>
             <button type="button" class="close" aria-label="Close" id="comment_delete_{{ comment.id }}">
               <span aria-hidden="true">&times;</span>
             </button>
             <h4>{{ comment.title}}</h4>
             <p>{{ comment.text }}</p>
             <a href="{{ comment.code_url}}">{{ comment.code_url }}</a>
-          </form>
         </div>
       </div>
     </div>
@@ -80,11 +77,13 @@
     <div class="row mt-3">
       <div class="card h-100 w-100">
         <div class="card-body">
-          <form>
+            <form method="post" action="{% url 'add comment' %}">
+                {% csrf_token %} {{ form.non_field_errors }}
             <p>
-              <input type="text" class="form-control input-lg" placeholder="Title" required autofocus>
-              <textarea class="form-control rounded-0" id="exampleFormControlTextarea1" rows="10" placeholder="Enter comment here"></textarea>
-              <input type="url" class="form-control input-lg" placeholder="Code URL" required autofocus>
+              <input type="hidden" id="pk" name="pk" value={{ article.id }}>
+              <input type="text" class="form-control input-lg" placeholder="Title" name="title" id="title" required autofocus>
+              <textarea class="form-control rounded-0" id="exampleFormControlTextarea1" rows="10" placeholder="Enter comment here" name="text" id="text"></textarea>
+              <input type="url" class="form-control input-lg" placeholder="Code URL" name="url" id="url" required autofocus>
             </p>
             <button class="btn btn-primary btn-sm" id="" title="Add">Add</button>
           </form>
@@ -106,14 +105,12 @@
     <div class="row mt-3">
       <div class="card">
         <div class="card-body">
-          <form>
             <button type="button" class="close" aria-label="Close" id="benchmark_delete_{{ benchmark.id }}">
               <span aria-hidden="true">&times;</span>
             </button>
             <h4>{{ benchmark.dataset}}</h4>
-            {{ benchmark.score|floatformat }} %
+            {{ benchmark.score|floatformat }} % <br>
             <a href="{{ comment.code_url}}">{{ benchmark.code_url }}</a>
-          </form>
         </div>
       </div>
     </div>
@@ -122,11 +119,13 @@
     <div class="row mt-3">
       <div class="card h-100 w-100">
         <div class="card-body">
-          <form>
+            <form method="post" action="{% url 'add benchmark' %}">
+                {% csrf_token %} {{ form.non_field_errors }}
             <p>
-              <input type="text" class="form-control" placeholder="Dataset" required autofocus>
-              <input type="number" class="form-control" placeholder="Score" required autofocus>
-              <input type="url" class="form-control input-lg" placeholder="Code URL" required autofocus>
+              <input type="hidden" id="pk" name="pk" value={{ article.id }}>
+              <input type="text" class="form-control" placeholder="Dataset" name="dataset" id="dataset" equired autofocus>
+              <input type="number" class="form-control" placeholder="Score" name="score" id="score" required autofocus>
+              <input type="url" class="form-control input-lg" placeholder="Code URL" name="url" id="url" required autofocus>
             </p>
             <button class="btn btn-primary btn-sm" id="" title="Add">Add</button>
           </form>
