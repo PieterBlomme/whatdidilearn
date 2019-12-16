@@ -5,10 +5,7 @@
   $(document).ready(function () {
     $('#mylibrary').change(function () {
       if (this.checked) {
-        $("#mylibrary_post").val(true);
-      }
-      else {
-        $("#mylibrary_post").val(false);
+        window.location.href = '/home/lib/';
       }
     });
   });
@@ -19,7 +16,6 @@
   <div class="row mt-3">
     <div class="col-lg-6 md-6 sm-4 ">
       <input type="text" class="form-control" placeholder="Search title" required autofocus name="search_article" id="search_article">
-      <input type="hidden" id="mylibrary_post" name="mylibrary_post" value={{ checkbox }}>
     </div>
     <div class="col-lg-6 md-6 sm-4 ">
       <div class="text-right">
@@ -33,7 +29,6 @@
   <div class="row mt-3">
     <div class="col-lg-6 md-6 sm-4 ">
       <input type="text" class="form-control" placeholder="Search tag" required autofocus name="search_tag" id="search_tag">
-      <input type="hidden" id="mylibrary_post" name="mylibrary_post" value={{ checkbox }}>
     </div>
     <div class="col-lg-6 md-6 sm-4 ">
       <div class="text-right">
@@ -47,7 +42,6 @@
   <div class="row mt-3">
     <div class="col-lg-6 md-6 sm-4 ">
       <input type="text" class="form-control" placeholder="Search benchmark" required autofocus name="search_benchmark" id="search_benchmark">
-      <input type="hidden" id="mylibrary_post" name="mylibrary_post" value={{ checkbox }}>
     </div>
     <div class="col-lg-6 md-6 sm-4 ">
       <div class="text-right">

@@ -11,7 +11,8 @@ urlpatterns = [
     url(r'^reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     url(r'^reset_done/$', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     url(r'^signup/$', views.signup, name='signup'),
-    url(r'home', views.home, name='home'), #TODO: make sure URL only works for home page (separate app?)
+    path('home/lib/', views.home_library, name='home_library'),
+    path('home/', views.home, name='home'), #TODO: make sure URL only works for home page (separate app?)
     url(r'library', views.add_to_lib, name='add to library'),
     path('<str:pk>/', views.ArticleDetailView.as_view(), name='detail'),
 ]

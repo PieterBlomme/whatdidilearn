@@ -21,20 +21,31 @@ def signup(request):
     return render(request, 'learnsomething/signup.html', {'form': form})
 
 def home(request):
-    checkbox_val = "false"
+    #search filter
     if request.method == 'POST':
-        print(request.POST['mylibrary_post'])
-        checkbox_val = request.POST['mylibrary_post']
-
-        if 'search_article' in request.POST:
-            search_string = request.POST['search_article']
-            articles = Article.objects.filter(title__icontains=search_string) | Article.objects.filter(authors__icontains=search_string)
+        search_string = request.POST['search_article']
+        articles = Article.objects.filter(title__icontains=search_string) | Article.objects.filter(authors__icontains=search_string)
     else:
         articles = Article.objects.all()
 
-    return render(request, 'learnsomething/home.html', {'articles': articles, 
-                                                        'checkbox' : checkbox_val #send it back
-                                                        })
+    return render(request, 'learnsomething/home.html', {'articles': articles })
+
+@login_required
+def home_library(request):
+    #library filter
+    user = request.user
+    user_articles = Library.objects.filter(user=user).values_list('paper', flat=True)
+    articles = Article.objects.filter(id__in=user_articles)
+
+    #search filter
+    if request.method == 'POST':
+        search_string = request.POST['search_article']
+        articles = articles.filter(paper_title__icontains=search_string) | Article.objects.filter(paper_authors__icontains=search_string)
+
+    print(articles)
+
+    return render(request, 'learnsomething/home.html', {'articles': articles, 'checkbox' : 'true' })
+
 @login_required
 def add_to_lib(request):
     if request.method == 'POST':
