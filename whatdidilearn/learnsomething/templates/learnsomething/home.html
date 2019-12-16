@@ -2,18 +2,16 @@
 {% extends 'base.html' %} {% block title %}Home{% endblock %} {% block content %}
 <!--checkbox change-->
 <script>
-$(document).ready(function() {
-  $('#mylibrary').change(function() {
-    if(this.checked)
-    {
-      $("#mylibrary_post").val(true);     
-    }
-    else
-    {
-      $("#mylibrary_post").val(false);       
-    }
+  $(document).ready(function () {
+    $('#mylibrary').change(function () {
+      if (this.checked) {
+        $("#mylibrary_post").val(true);
+      }
+      else {
+        $("#mylibrary_post").val(false);
+      }
+    });
   });
-});
 </script>
 <!-- Search form -->
 <form method="post" action="{% url 'home' %}">
@@ -69,16 +67,19 @@ $(document).ready(function() {
 <div class="row mt-3">
   <div class="card h-100 w-100">
     <div class="card-body">
-      <div class="col-lg-10 md-10 sm-10 ">
+      <p>
         <a href="{{ article.id }}">
           {{ article.title }}
           <br> {{ article.authors}}
           <br> {{ article.date }}
         </a>
-      </div>
-      <div class="col-lg-2 md-2 sm-2 ">
+      </p>
+      <form method="post" action="{% url 'add to library' %}">
+        {% csrf_token %} {{ form.non_field_errors }}
+        <input type="hidden" id="pk" name="pk" value={{ article.id }}>
         <button class="btn btn-primary" id="library_save_{{ article.id }}" title="Save"> Save</button>
-      </div>
+      </form>
+      
     </div>
 
   </div>

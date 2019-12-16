@@ -1,4 +1,5 @@
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.base import View
@@ -34,9 +35,23 @@ def home(request):
     return render(request, 'learnsomething/home.html', {'articles': articles, 
                                                         'checkbox' : checkbox_val #send it back
                                                         })
+@login_required
+def add_to_lib(request):
+    if request.method == 'POST':
+        pk = request.POST['pk']
+        paper = get_object_or_404(Article, pk=pk)
+        user = request.user
+
+        #No duplicates
+        if not Library.objects.filter(paper=paper).filter(user=user).exists():
+            lib_item = Library(paper=paper, user=user)
+            lib_item.save()
+
+    return redirect('detail', pk=pk)
 
 class ArticleDetailView(View):
     def get(self, request, *args, **kwargs):
+        print(kwargs['pk'])
         article = get_object_or_404(Article, pk=kwargs['pk'])
         tags = Tag.objects.filter(paper_id=article)
         benchmarks = Benchmark.objects.filter(paper_id=article)
