@@ -6,7 +6,6 @@
   $(document).ready(function () {
     $('button.close').click(function () {
       var res = this.id.split("_");
-      console.log(res);
       window.location.href = `./${res[0]}_${res[1]}/${res[2]}`;
     });
   });
@@ -35,11 +34,13 @@
 
 <div class="row mt-3">
   {% for tag in tags %}
-  <div class="col-1">
-    <button type="button" class="close" aria-label="Close" id="tag_delete_{{ tag.id }}">
-      <span aria-hidden="true">&times;</span>
-    </button>
-    <span class="badge badge-primary">{{tag.tag}}</span>
+  <div class="col-2">
+    <span class="badge badge-primary">
+        {{tag.tag}}
+        <button type="button" class="close" aria-label="Dismiss" id="tag_delete_{{ tag.id }}">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </span>
   </div>
   {% endfor %}
   <div class="col-2 ">
