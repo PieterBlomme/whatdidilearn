@@ -42,8 +42,6 @@ def home_library(request):
         search_string = request.POST['search_article']
         articles = articles.filter(paper_title__icontains=search_string) | Article.objects.filter(paper_authors__icontains=search_string)
 
-    print(articles)
-
     return render(request, 'learnsomething/home.html', {'articles': articles, 'checkbox' : 'true' })
 
 @login_required
@@ -62,7 +60,6 @@ def add_to_lib(request):
 
 class ArticleDetailView(View):
     def get(self, request, *args, **kwargs):
-        print(kwargs['pk'])
         article = get_object_or_404(Article, pk=kwargs['pk'])
         tags = Tag.objects.filter(paper_id=article)
         benchmarks = Benchmark.objects.filter(paper_id=article)
