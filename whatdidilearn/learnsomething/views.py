@@ -21,17 +21,36 @@ def signup(request):
         form = RegisterForm()
     return render(request, 'learnsomething/signup.html', {'form': form})
 
+def search_helper(articles, POST):
+    if 'search_article' in POST:
+        search_string = POST['search_article']
+        articles = articles.filter(title__icontains=search_string) | Article.objects.filter(authors__icontains=search_string)
+    if 'search_tag' in POST:
+        search_string = POST['search_tag']
+        tags = Tag.objects.filter(tag__icontains=search_string).values_list('paper', flat=True)
+        articles = articles.filter(id__in=tags)
+    if 'search_benchmark' in POST:
+        search_string = POST['search_benchmark']
+        benchmarks = Benchmark.objects.filter(dataset__icontains=search_string).values_list('paper', flat=True)
+        articles = articles.filter(id__in=benchmarks)
+
+    return articles.order_by('-date')
+
 def home(request):
     #search filter
+    articles = Article.objects.all()
+    
     if request.method == 'POST':
-        search_string = request.POST['search_article']
-        articles = Article.objects.filter(title__icontains=search_string) | Article.objects.filter(authors__icontains=search_string)
-    else:
-        articles = Article.objects.all()
+        articles = search_helper(articles, request.POST)
+
+    #search dropdowns
+    benchmarks = Benchmark.objects.values('dataset').distinct()
+    tags = Tag.objects.values('tag').distinct()
 
     #sort date descending
-    articles = articles.order_by('-date')
-    return render(request, 'learnsomething/home.html', {'articles': articles })
+    return render(request, 'learnsomething/home.html', {'articles': articles, 
+                                                        'benchmarks' : benchmarks,
+                                                        'tags' : tags })
 
 @login_required
 def home_library(request):
@@ -42,13 +61,17 @@ def home_library(request):
 
     #search filter
     if request.method == 'POST':
-        search_string = request.POST['search_article']
-        articles = articles.filter(paper_title__icontains=search_string) | Article.objects.filter(paper_authors__icontains=search_string)
-    
-    #sort date descending
-    articles = articles.order_by('-date')
-    return render(request, 'learnsomething/home.html', {'articles': articles, 'checkbox' : 'true' })
+        articles = search_helper(articles, request.POST)
 
+    #search dropdowns
+    benchmarks = Benchmark.objects.filter(user=user).values('dataset').distinct()
+    tags = Tag.objects.filter(user=user).values('tag').distinct()
+
+    #sort date descending
+    return render(request, 'learnsomething/home.html', {'articles': articles, 
+                                                        'benchmarks' : benchmarks,
+                                                        'tags' : tags,
+                                                        'checkbox' : 'true' })
 @login_required
 def add_to_lib(request):
     if request.method == 'POST':
