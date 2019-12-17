@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.base import View
 from .forms import RegisterForm
 from .models import *
+from datetime import datetime
 
 def signup(request):
     if request.method == 'POST':
@@ -28,6 +29,8 @@ def home(request):
     else:
         articles = Article.objects.all()
 
+    #sort date descending
+    articles = articles.order_by('-date')
     return render(request, 'learnsomething/home.html', {'articles': articles })
 
 @login_required
@@ -41,7 +44,9 @@ def home_library(request):
     if request.method == 'POST':
         search_string = request.POST['search_article']
         articles = articles.filter(paper_title__icontains=search_string) | Article.objects.filter(paper_authors__icontains=search_string)
-
+    
+    #sort date descending
+    articles = articles.order_by('-date')
     return render(request, 'learnsomething/home.html', {'articles': articles, 'checkbox' : 'true' })
 
 @login_required
@@ -92,7 +97,10 @@ def add_benchmark(request):
         if not Benchmark.objects.filter(paper=paper).filter(user=user).filter(dataset=dataset).exists():
             benchmark_item = Benchmark(paper=paper, user=user, dataset=dataset, score=score, code_url=url)
             benchmark_item.save()
-    return redirect('detail', pk=pk)
+        return redirect('detail', pk=pk)
+
+    else:
+        return redirect('home')
 
 
 @login_required
@@ -109,8 +117,41 @@ def add_comment(request):
         comment_item = Comment(paper=paper, user=user, title=title, text=text, code_url=url)
         comment_item.save()
 
-    return redirect('detail', pk=pk)
+        return redirect('detail', pk=pk)
 
+    else:
+        return redirect('home')
+
+@login_required
+def add_paper(request):
+    if request.method == 'POST':
+        title = request.POST['title']
+        authors = request.POST['authors']
+        if request.POST['date']:
+            date = request.POST['date']
+        else:
+            date = datetime.today().strftime('%Y-%m-%d')
+        url = request.POST['url']
+
+        #Create paper
+        #No duplicates
+        if not Article.objects.filter(url=url).exists():
+            paper = Article(title=title, authors=authors, date=date, url=url)
+            paper.save()
+        else:
+            paper = Article.objects.get(url=url)
+
+        #Add to user library
+        #No duplicates
+        user = request.user
+        if not Library.objects.filter(paper=paper).filter(user=user).exists():
+            lib_item = Library(paper=paper, user=user)
+            lib_item.save()
+
+        return redirect('detail', pk=paper.id)
+
+    else:
+         return render(request, 'learnsomething/new.html')
 
 @login_required
 def delete_tag(request, pk_paper, pk):

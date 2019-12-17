@@ -5,10 +5,10 @@
   $(document).ready(function () {
     $('#mylibrary').change(function () {
       if (this.checked) {
-        window.location.href = '/home/lib/';
+        window.location.href = '/lib/';
       }
       else {
-        window.location.href = '/home/';
+        window.location.href = '/';
       }
     });
   });
@@ -55,10 +55,20 @@
 </form>
 
 <hr>
-<div class="custom-control custom-checkbox">
-  <input type="checkbox" class="custom-control-input" id="mylibrary" {% if checkbox == "true" %} checked {% endif %}>
-  <label class="custom-control-label" for="mylibrary">My library</label>
+<div class="row">
+  <div class="col-10 custom-control custom-checkbox">
+    <input type="checkbox" class="custom-control-input" id="mylibrary" {% if checkbox == "true" %} checked {% endif %}>
+    <label class="custom-control-label" for="mylibrary">My library</label>
+  </div>
+  <div class="col-2 ">
+    <div class="text-right">
+      <a href="{% url 'add paper' %}">
+        <button class="btn btn-primary" id="search_benchmark_button" title="Search" type="submit">Add paper</button>
+      </a>
+    </div>
+  </div>
 </div>
+
 
 {% for article in articles %}
 <div class="row mt-3">
@@ -76,7 +86,7 @@
         <input type="hidden" id="pk" name="pk" value={{ article.id }}>
         <button class="btn btn-primary" id="library_save_{{ article.id }}" title="Save"> Save</button>
       </form>
-      
+
     </div>
 
   </div>

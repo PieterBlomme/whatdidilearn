@@ -1,0 +1,20 @@
+<!-- templates/home.html-->
+{% extends 'base.html' %} {% block title %}Add paper{% endblock %} {% block content %}
+
+<div class="row mt-3">
+      <div class="card h-100 w-100">
+        <div class="card-body">
+            <form method="post" action="{% url 'add paper' %}">
+                {% csrf_token %} {{ form.non_field_errors }}
+            <p>
+              <input type="text" class="form-control input-lg" placeholder="Title" name="title" id="title" required autofocus>
+              <input type="text" class="form-control input-lg" placeholder="Authors" name="authors" id="authors" autofocus>
+              <input type="date" class="form-control input-lg"  name="date" id="date">
+              <input type="url" class="form-control input-lg" placeholder="Code URL" name="url" id="url" required autofocus>
+            </p>
+            <button class="btn btn-primary btn-sm" id="" title="Add">Add</button>
+          </form>
+        </div>
+      </div>
+</div>
+{% endblock %}
