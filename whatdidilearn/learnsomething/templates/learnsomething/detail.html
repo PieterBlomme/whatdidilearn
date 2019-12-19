@@ -41,9 +41,12 @@
   <div class="col-2">
     <span class="badge badge-primary">
         {{tag.tag}}
+        {% if tag.user == user %}
         <button type="button" class="close" aria-label="Dismiss" id="delete_tag_{{ tag.id }}">
           <span aria-hidden="true">&times;</span>
-        </button>
+        </button>        
+        {% endif %}
+
       </span>
   </div>
   {% endfor %}
@@ -69,9 +72,11 @@
     <div class="row mt-3">
       <div class="card">
         <div class="card-body">
+            {% if comment.user == user %}
             <button type="button" class="close" aria-label="Close" id="delete_comment_{{ comment.id }}">
               <span aria-hidden="true">&times;</span>
             </button>
+            {% endif %}
             <h4>{{ comment.title}}</h4>
             <p>{{ comment.text }}</p>
             <a href="{{ comment.code_url}}">{{ comment.code_url }}</a>
@@ -110,9 +115,11 @@
     <div class="row mt-3">
       <div class="card">
         <div class="card-body">
+            {% if benchmark.user == user %}
             <button type="button" class="close" aria-label="Close" id="delete_benchmark_{{ benchmark.id }}">
               <span aria-hidden="true">&times;</span>
             </button>
+            {% endif %}
             <h4>{{ benchmark.dataset}}</h4>
             {{ benchmark.score|floatformat }} % <br>
             <a href="{{ comment.code_url}}">{{ benchmark.code_url }}</a>
