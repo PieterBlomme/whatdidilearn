@@ -6,6 +6,7 @@ from django.views.generic.base import View
 from .forms import RegisterForm
 from .models import *
 from datetime import datetime
+from django.db.models import Exists, OuterRef
 
 def signup(request):
     if request.method == 'POST':
@@ -38,7 +39,9 @@ def search_helper(articles, POST):
 
 def home(request):
     #search filter
-    articles = Article.objects.all()
+    user = request.user
+    mylib = Library.objects.filter(paper=OuterRef('id'), user=user)
+    articles = Article.objects.all().annotate(user_article=Exists(mylib))
     
     if request.method == 'POST':
         articles = search_helper(articles, request.POST)
@@ -56,8 +59,8 @@ def home(request):
 def home_library(request):
     #library filter
     user = request.user
-    user_articles = Library.objects.filter(user=user).values_list('paper', flat=True)
-    articles = Article.objects.filter(id__in=user_articles)
+    mylib = Library.objects.filter(paper=OuterRef('id'), user=user)
+    articles = Article.objects.all().filter(Exists(mylib)).annotate(user_article=Exists(mylib))
 
     #search filter
     if request.method == 'POST':
@@ -205,7 +208,12 @@ def delete_comment(request, pk_paper, pk):
 
 class ArticleDetailView(View):
     def get(self, request, *args, **kwargs):
+        user = request.user
         article = get_object_or_404(Article, pk=kwargs['pk'])
+        if Library.objects.filter(user=user, paper=kwargs['pk']).count():
+            article.user_article = True
+
+
         tags = Tag.objects.filter(paper_id=article)
         benchmarks = Benchmark.objects.filter(paper_id=article)
         comments = Comment.objects.filter(paper_id=article)

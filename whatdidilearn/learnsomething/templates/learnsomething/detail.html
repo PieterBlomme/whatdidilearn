@@ -23,7 +23,11 @@
       <form method="post" action="{% url 'add to library' %}">
         {% csrf_token %} {{ form.non_field_errors }}
         <input type="hidden" id="pk" name="pk" value={{ article.id }}>
+        {% if article.user_article %}
+        <button type="button" class="btn btn-secondary" id="library_save_{{ article.id }}" title="Save"> Saved</button>
+        {% else %}
         <button class="btn btn-primary" id="library_save_{{ article.id }}" title="Save"> Save</button>
+        {% endif %}
       </form>
     </div>
   </div>
