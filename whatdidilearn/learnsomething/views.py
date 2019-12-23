@@ -6,7 +6,7 @@ from django.views.generic.base import View
 from .forms import RegisterForm
 from .models import *
 from datetime import datetime
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, BooleanField, Value
 
 def signup(request):
     if request.method == 'POST':
@@ -39,9 +39,12 @@ def search_helper(articles, POST):
 
 def home(request):
     #search filter
-    user = request.user
-    mylib = Library.objects.filter(paper=OuterRef('id'), user=user)
-    articles = Article.objects.all().annotate(user_article=Exists(mylib))
+    if request.user.is_authenticated:
+        user = request.user
+        mylib = Library.objects.filter(paper=OuterRef('id'), user=user)
+        articles = Article.objects.all().annotate(user_article=Exists(mylib))
+    else:
+        articles = Article.objects.all().annotate(user_article=Value(False, output_field=BooleanField()))
     
     if request.method == 'POST':
         articles = search_helper(articles, request.POST)
@@ -208,10 +211,16 @@ def delete_comment(request, pk_paper, pk):
 
 class ArticleDetailView(View):
     def get(self, request, *args, **kwargs):
+        
+
         user = request.user
         article = get_object_or_404(Article, pk=kwargs['pk'])
-        if Library.objects.filter(user=user, paper=kwargs['pk']).count():
-            article.user_article = True
+
+        if request.user.is_authenticated:
+            if Library.objects.filter(user=user, paper=kwargs['pk']).count():
+                article.user_article = True
+        else:
+            article.user_article = False
 
 
         tags = Tag.objects.filter(paper_id=article)

@@ -27,12 +27,19 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
+              {% if not user.is_authenticated %}
               <li class="nav-item ">
                 <a class="nav-link" href="{% url 'login' %}">Login</a>
               </li>
               <li class="nav-item ">
-                <a class="nav-link" href="{% url 'signup' %}">Register</a>
+                  <a class="nav-link" href="{% url 'signup' %}">Register</a>
                 </li>
+              {% else %}
+              <li class="nav-item ">
+                  <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                </li>
+              {% endif %}
+
             </ul>
           </div>
         </div>
