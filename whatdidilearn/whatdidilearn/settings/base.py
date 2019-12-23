@@ -20,14 +20,19 @@ BASE_DIR_PROD = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'rw^*w@7r@dbx827bg1fn)gcpk(#w^fz%xg4(y1z($qz5750&$0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# SECURITY WARNING: keep the secret key used in production secret!
+# Overwritten in PROD
+SECRET_KEY = 'rw^*w@7r@dbx827bg1fn)gcpk(#w^fz%xg4(y1z($qz5750&$0'
+
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 # Application definition
 
