@@ -26,13 +26,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+
 # SECURITY WARNING: keep the secret key used in production secret!
 # Overwritten in PROD
 SECRET_KEY = 'rw^*w@7r@dbx827bg1fn)gcpk(#w^fz%xg4(y1z($qz5750&$0'
-
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
 
 # Application definition
 
