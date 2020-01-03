@@ -58,10 +58,9 @@ def home(request):
                                                         'benchmarks' : benchmarks,
                                                         'tags' : tags })
 
-@login_required
-def home_library(request):
+def user_library(request, user):
     #library filter
-    user = request.user
+    user = get_object_or_404(User, username=user)
     mylib = Library.objects.filter(paper=OuterRef('id'), user=user)
     articles = Article.objects.all().filter(Exists(mylib)).annotate(user_article=Exists(mylib))
 

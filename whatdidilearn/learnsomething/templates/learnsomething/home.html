@@ -5,7 +5,7 @@
   $(document).ready(function () {
     $('#mylibrary').change(function () {
       if (this.checked) {
-        window.location.href = '/lib/';
+        window.location.href = '/{{request.user}}/';
       }
       else {
         window.location.href = '/';
@@ -14,6 +14,7 @@
   });
 </script>
 <!-- Search form -->
+
 <div class="row mt-3">
   <div class="col-lg-6 md-6 sm-4 ">
     <form method="post" action="{% url 'home' %}">
