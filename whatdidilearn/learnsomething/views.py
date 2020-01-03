@@ -54,6 +54,7 @@ def home(request):
     tags = Tag.objects.values('tag').distinct()
 
     #sort date descending
+    articles = articles.order_by('-date')
     return render(request, 'learnsomething/home.html', {'articles': articles, 
                                                         'benchmarks' : benchmarks,
                                                         'tags' : tags })
@@ -73,6 +74,7 @@ def user_library(request, user):
     tags = Tag.objects.filter(user=user).values('tag').distinct()
 
     #sort date descending
+    articles = articles.order_by('-date')
     return render(request, 'learnsomething/home.html', {'articles': articles, 
                                                         'benchmarks' : benchmarks,
                                                         'tags' : tags,
