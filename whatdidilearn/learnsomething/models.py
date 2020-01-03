@@ -23,6 +23,7 @@ class Comment(models.Model):
     code_url = models.URLField(max_length=1000)
     title = models.CharField(max_length=1000)
     text = models.TextField()
+    private = models.BooleanField(default=False)
 
 class Benchmark(models.Model):
     paper = models.ForeignKey(Article, on_delete=models.CASCADE)
@@ -30,3 +31,4 @@ class Benchmark(models.Model):
     code_url = models.URLField(max_length=1000)
     dataset = models.CharField(max_length=1000)
     score = models.DecimalField(max_digits=10, decimal_places=5)
+    private = models.BooleanField(default=False)
