@@ -119,7 +119,9 @@ def add_benchmark(request):
         dataset = request.POST['dataset']
         score = request.POST['score']
         url = request.POST['url']
-        if (request.POST['private'] == "on"):
+        if ('private' not in request.POST.keys()):
+            private = False
+        elif (request.POST['private'] == "on"):
             private = True
         else:
             private = False
@@ -144,7 +146,9 @@ def add_comment(request):
         title = request.POST['title']
         text = request.POST['text']
         url = request.POST['url']
-        if (request.POST['private'] == "on"):
+        if ('private' not in request.POST.keys()):
+            private = False
+        elif (request.POST['private'] == "on"):
             private = True
         else:
             private = False

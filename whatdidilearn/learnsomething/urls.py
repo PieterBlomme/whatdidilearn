@@ -15,11 +15,11 @@ urlpatterns = [
     path('', views.home, name='home'), #TODO: make sure URL only works for home page (separate app?)
     url(r'library', views.add_to_lib, name='add to library'),
     path('detail/add/', views.add_paper, name='add paper'),
-    path('detail/tag', views.add_tag, name='add tag'),
+    path('add/tag', views.add_tag, name='add tag'),
     path('detail/<str:pk_paper>/delete_tag/<str:pk>/', views.delete_tag, name='delete tag'),
-    path('detail/benchmark', views.add_benchmark, name='add benchmark'),
+    path('add/benchmark', views.add_benchmark, name='add benchmark'),
     path('detail/<str:pk_paper>/delete_benchmark/<str:pk>/', views.delete_benchmark, name='delete benchmark'),
-    path('detail/comment', views.add_comment, name='add comment'),
+    path('add/comment', views.add_comment, name='add comment'),
     path('detail/<str:pk_paper>/delete_comment/<str:pk>/', views.delete_comment, name='delete comment'),
     path('detail/<str:pk>/', views.ArticleDetailView.as_view(), name='detail'),
 ]
