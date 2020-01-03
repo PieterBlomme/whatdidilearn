@@ -117,13 +117,17 @@ def add_benchmark(request):
         dataset = request.POST['dataset']
         score = request.POST['score']
         url = request.POST['url']
+        if (request.POST['private'] == "on"):
+            private = True
+        else:
+            private = False
 
         paper = get_object_or_404(Article, pk=pk)
         user = request.user
 
         #No duplicates
         if not Benchmark.objects.filter(paper=paper).filter(user=user).filter(dataset=dataset).exists():
-            benchmark_item = Benchmark(paper=paper, user=user, dataset=dataset, score=score, code_url=url)
+            benchmark_item = Benchmark(paper=paper, user=user, dataset=dataset, score=score, code_url=url, private=private)
             benchmark_item.save()
         return redirect('detail', pk=pk)
 
@@ -138,11 +142,15 @@ def add_comment(request):
         title = request.POST['title']
         text = request.POST['text']
         url = request.POST['url']
+        if (request.POST['private'] == "on"):
+            private = True
+        else:
+            private = False
 
         paper = get_object_or_404(Article, pk=pk)
         user = request.user
 
-        comment_item = Comment(paper=paper, user=user, title=title, text=text, code_url=url)
+        comment_item = Comment(paper=paper, user=user, title=title, text=text, code_url=url, private=private)
         comment_item.save()
 
         return redirect('detail', pk=pk)
