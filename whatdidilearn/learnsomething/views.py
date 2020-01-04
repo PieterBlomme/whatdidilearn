@@ -6,7 +6,7 @@ from django.views.generic.base import View
 from .forms import RegisterForm
 from .models import *
 from datetime import datetime
-from django.db.models import Exists, OuterRef, BooleanField, Value
+from django.db.models import Exists, OuterRef, BooleanField, Value, Q
 
 def signup(request):
     if request.method == 'POST':
@@ -235,9 +235,33 @@ class ArticleDetailView(View):
         else:
             article.user_article = False
 
+        show_all = self.request.GET.get('show_all', 0)
 
         tags = Tag.objects.filter(paper_id=article)
-        benchmarks = Benchmark.objects.filter(paper_id=article)
-        comments = Comment.objects.filter(paper_id=article)
-        context = {'article': article, 'tags' : tags, 'benchmarks' : benchmarks, 'comments' : comments}
+
+        #Get all comments/benchmarks that are non private or from user
+        if request.user.is_authenticated:
+            benchmarks = Benchmark.objects.filter(paper_id=article).filter(Q(user=user) | Q(private=False))
+            comments = Comment.objects.filter(paper_id=article).filter(Q(user=user) | Q(private=False))
+        else:
+            benchmarks = Benchmark.objects.filter(paper_id=article).filter(private=False)
+            comments = Comment.objects.filter(paper_id=article).filter(private=False)
+
+        #filter if needed
+        #show_all = 0: filter both
+        #show_all = 1: filter benchmarks
+        #show_all = 2: filter comments
+        #show_all = 3: show all
+        if show_all == 2 or show_all == 0:
+            if request.user.is_authenticated:
+                comments = comments.filter(user=user)
+            else:
+                comments = Comment.objects.none()
+        if show_all == 1 or show_all == 0:
+            if request.user.is_authenticated:
+                benchmarks = benchmarks.filter(user=user)
+            else:
+                benchmarks = Benchmark.objects.none()
+
+        context = {'article': article, 'tags' : tags, 'benchmarks' : benchmarks, 'comments' : comments, 'show_all' : show_all}
         return render(request, 'learnsomething/detail.html', context)

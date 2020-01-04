@@ -4,9 +4,35 @@
 <!--close events-->
 <script>
   $(document).ready(function () {
+    var show_all = {{ show_all }} ;
+
     $('button.close').click(function () {
       var res = this.id.split("_");
       window.location.href = `./${res[0]}_${res[1]}/${res[2]}/`;
+    });
+
+    $('#comment_checkbox').click(function () {
+      if (this.checked)
+      {
+        show_all += 2;
+      }
+      else if (show_all == 2 || show_all == 3)
+      {
+        show_all -= 2;
+      }
+      window.location.href = `./?show_all=${show_all}`;
+    });
+    $('#benchmark_checkbox').click(function () {
+      if (this.checked)
+      {
+        show_all += 1;
+      }
+      else if (show_all == 1 || show_all == 3)
+      {
+        show_all -= 1;
+      }
+      window.location.href = `./?show_all=${show_all}`;
+
     });
   });
 </script>
@@ -66,7 +92,10 @@
 
 <div class="row mt-3">
   <div class="col-7 ">
-    <input type="checkbox" class="custom-control-input" "comment_checkbox" id="comment_checkbox">
+    <input type="checkbox" class="custom-control-input" name="comment_checkbox" id="comment_checkbox"
+      {% if show_all == "2" or show_all == "3" %}
+        checked
+      {% endif %}>
     <label class="custom-control-label" for="comment_checkbox">Show comments from others</label>
     {% for comment in comments %}
     <div class="row mt-3">
@@ -111,7 +140,10 @@
 
 
   <div class="col-4 ">
-    <input type="checkbox" class="custom-control-input" "benchmark_checkbox" id="benchmark_checkbox">
+    <input type="checkbox" class="custom-control-input" name="benchmark_checkbox" id="benchmark_checkbox"
+    {% if show_all == "1" or show_all == "3" %}
+        checked
+      {% endif %}>
     <label class="custom-control-label" for="benchmark_checkbox">Show benchmarks from others</label>
     {% for benchmark in benchmarks %}
     <div class="row mt-3">
