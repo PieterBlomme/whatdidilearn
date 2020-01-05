@@ -48,6 +48,8 @@ def home(request):
     
     if request.method == 'POST':
         articles = search_helper(articles, request.POST)
+    else: #return last 50
+        articles = articles[:50]
 
     #search dropdowns
     benchmarks = Benchmark.objects.values('dataset').distinct()
@@ -68,7 +70,9 @@ def user_library(request, user):
     #search filter
     if request.method == 'POST':
         articles = search_helper(articles, request.POST)
-
+    else: #return last 50
+        articles = articles[:50]
+        
     #search dropdowns
     benchmarks = Benchmark.objects.filter(user=user).values('dataset').distinct()
     tags = Tag.objects.filter(user=user).values('tag').distinct()
