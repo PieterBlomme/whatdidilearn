@@ -49,14 +49,16 @@ def home(request):
     if request.method == 'POST':
         articles = search_helper(articles, request.POST)
     else: #return last 50
-        articles = articles[:50]
+        articles = articles.order_by('-date')[:50]
 
     #search dropdowns
-    benchmarks = Benchmark.objects.values('dataset').distinct()
+    if request.user.is_authenticated:
+        benchmarks = Benchmark.objects.filter(Q(user=user) | Q(private=False))
+    else:
+        benchmarks = Benchmark.objects.filter(private=False)
+    benchmarks = benchmarks.values('dataset').distinct()
     tags = Tag.objects.values('tag').distinct()
 
-    #sort date descending
-    articles = articles.order_by('-date')
     return render(request, 'learnsomething/home.html', {'articles': articles, 
                                                         'benchmarks' : benchmarks,
                                                         'tags' : tags })
@@ -71,14 +73,13 @@ def user_library(request, user):
     if request.method == 'POST':
         articles = search_helper(articles, request.POST)
     else: #return last 50
-        articles = articles[:50]
+        articles = articles.order_by('-date')[:50]
         
     #search dropdowns
-    benchmarks = Benchmark.objects.filter(user=user).values('dataset').distinct()
+    benchmarks = Benchmark.objects.filter(Q(user=user) | Q(private=False))
+    benchmarks = benchmarks.values('dataset').distinct()
     tags = Tag.objects.filter(user=user).values('tag').distinct()
 
-    #sort date descending
-    articles = articles.order_by('-date')
     return render(request, 'learnsomething/home.html', {'articles': articles, 
                                                         'benchmarks' : benchmarks,
                                                         'tags' : tags,
