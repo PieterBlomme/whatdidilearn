@@ -25,7 +25,7 @@ def signup(request):
 def search_helper(articles, POST):
     if 'search_article' in POST:
         search_string = POST['search_article']
-        articles = articles.filter(title__icontains=search_string) | Article.objects.filter(authors__icontains=search_string)
+        articles = articles.filter(title__icontains=search_string) | articles.filter(authors__icontains=search_string) | articles.filter(abstract__icontains=search_string)
     if 'search_tag' in POST:
         search_string = POST['search_tag']
         tags = Tag.objects.filter(tag__icontains=search_string).values_list('paper', flat=True)
@@ -76,7 +76,10 @@ def user_library(request, user):
         articles = articles.order_by('-date')[:50]
         
     #search dropdowns
-    benchmarks = Benchmark.objects.filter(Q(user=user) | Q(private=False))
+    if request.user.is_authenticated:
+        benchmarks = Benchmark.objects.filter(Q(user=user) | Q(private=False))
+    else:
+        benchmarks = Benchmark.objects.filter(private=False)
     benchmarks = benchmarks.values('dataset').distinct()
     tags = Tag.objects.filter(user=user).values('tag').distinct()
 
@@ -174,6 +177,7 @@ def add_paper(request):
     if request.method == 'POST':
         title = request.POST['title']
         authors = request.POST['authors']
+        abstract = request.POST['abstract']
         if request.POST['date']:
             date = request.POST['date']
         else:
@@ -183,7 +187,7 @@ def add_paper(request):
         #Create paper
         #No duplicates
         if not Article.objects.filter(url=url).exists():
-            paper = Article(title=title, authors=authors, date=date, url=url)
+            paper = Article(title=title, authors=authors, date=date, url=url, abstract=abstract)
             paper.save()
         else:
             paper = Article.objects.get(url=url)

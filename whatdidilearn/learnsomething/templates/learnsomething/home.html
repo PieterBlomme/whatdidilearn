@@ -20,7 +20,7 @@
     <form method="post" action="{% url 'home' %}">
       {% csrf_token %} {{ form.non_field_errors }}
       <div class="row mt-3">
-        <input type="text" class="form-control" placeholder="Search title" autofocus name="search_article" id="search_article">
+        <input type="text" class="form-control" placeholder="Search text" autofocus name="search_article" id="search_article">
       </div>
 
       <div class="row mt-3">

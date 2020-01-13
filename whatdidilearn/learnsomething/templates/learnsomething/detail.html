@@ -46,6 +46,9 @@
       <a href="{{ article.url}}"> {{ article.url }}</a>
       <br> {{ article.date }}
       <br>
+      <p>
+          {{ article.abstract }}
+      </p>
       <form method="post" action="{% url 'add to library' %}">
         {% csrf_token %} {{ form.non_field_errors }}
         <input type="hidden" id="pk" name="pk" value={{ article.id }}>

@@ -1,20 +1,68 @@
 <!-- templates/home.html-->
 {% extends 'base.html' %} {% block title %}Add paper{% endblock %} {% block content %}
 
+<script>
+    $(document).ready(function () {
+    
+      $('#arxiv').click(function () {
+        if (this.checked)
+        {
+          var arxiv_url = $('#url').val();
+          var arxiv_id = arxiv_url.split('/').slice(-1)[0].replace('.pdf', '').replace('.PDF', '');
+          var title;
+          var abstract;
+          var authors = [];
+
+          $.getJSON('https://api.semanticscholar.org/v1/paper/arXiv:' + arxiv_id, function(data){
+              console.log(data);
+              console.log(data.authors);
+              title = data.title;
+              abstract = data.abstract;
+              data.authors.forEach(element => {
+                        console.log(element.name);
+                        authors.push(element.name);
+                      });
+          })
+          .done(function() { 
+              document.getElementById("title").value = title;
+              document.getElementById("abstract").value = abstract;
+              document.getElementById("authors").value = authors.join(', ');
+           });;
+
+
+          
+
+        }
+
+      });
+
+    });
+  </script>
+
 <div class="row mt-3">
-      <div class="card h-100 w-100">
-        <div class="card-body">
-            <form method="post" action="{% url 'add paper' %}">
-                {% csrf_token %} {{ form.non_field_errors }}
-            <p>
-              <input type="text" class="form-control input-lg" placeholder="Title" name="title" id="title" required autofocus>
-              <input type="text" class="form-control input-lg" placeholder="Authors" name="authors" id="authors" autofocus>
-              <input type="date" class="form-control input-lg"  name="date" id="date">
+  <div class="card h-100 w-100">
+    <div class="card-body">
+      <form method="post" action="{% url 'add paper' %}">
+        {% csrf_token %} {{ form.non_field_errors }}
+        <p>
+          <div class="row">
+            <div class="col-8 ">
               <input type="url" class="form-control input-lg" placeholder="Paper URL" name="url" id="url" required autofocus>
-            </p>
-            <button class="btn btn-primary btn-sm" id="" title="Add">Add</button>
-          </form>
-        </div>
-      </div>
+            </div>
+            <div class="col-4 ">
+              <input type="checkbox" class="custom-control-input" name="arxiv" id="arxiv">
+              <label class="custom-control-label" for="arxiv">Arxiv paper?</label>
+            </div>
+          </div>
+          <input type="text" class="form-control input-lg" placeholder="Authors" name="authors" id="authors" autofocus>
+          <input type="date" class="form-control input-lg" name="date" id="date">
+          <input type="text" class="form-control input-lg" placeholder="Title" name="title" id="title" required autofocus>
+          <input type="hidden" class="form-control input-lg" placeholder="Abstract" name="abstract" id="abstract" required autofocus>
+    </p>
+    <button class="btn btn-primary btn-sm" id="" title="Add">Add</button>
+    
+    </form>
+  </div>
+</div>
 </div>
 {% endblock %}
