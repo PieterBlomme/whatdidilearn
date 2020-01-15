@@ -14,8 +14,6 @@
           var authors = [];
 
           $.getJSON('https://api.semanticscholar.org/v1/paper/arXiv:' + arxiv_id, function(data){
-              console.log(data);
-              console.log(data.authors);
               title = data.title;
               abstract = data.abstract;
               data.authors.forEach(element => {

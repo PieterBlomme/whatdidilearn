@@ -272,5 +272,11 @@ class ArticleDetailView(View):
             else:
                 benchmarks = Benchmark.objects.none()
 
-        context = {'article': article, 'tags' : tags, 'benchmarks' : benchmarks, 'comments' : comments, 'show_all' : show_all}
+        if 'arxiv' in article.url:
+            arxiv_id = article.url.split('/')[-1].replace('.pdf', '').replace('.PDF', '')
+        else:
+            arxiv_id = None
+
+        context = {'article': article, 'tags' : tags, 'benchmarks' : benchmarks, 'comments' : comments, 
+                            'show_all' : show_all, 'arxiv_id' : arxiv_id}
         return render(request, 'learnsomething/detail.html', context)

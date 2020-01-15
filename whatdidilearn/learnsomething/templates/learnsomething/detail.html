@@ -34,6 +34,53 @@
       window.location.href = `./?show_all=${show_all}`;
 
     });
+
+    function reference_to_string(el)
+    {
+      var title = el.title;
+      var year = el.year;
+      var authors = [];
+
+      el.authors.forEach(element => {
+                        authors.push(element.name);
+                      });
+      authors = authors.join(', ');
+      return [authors, title, year]
+    }
+
+    $('#arxiv').click(function () {
+          var references = [];
+
+          $.getJSON('https://api.semanticscholar.org/v1/paper/arXiv:' + {{ arxiv_id }}, function(data){
+              data.references.forEach(element => {
+                        references.push(reference_to_string(element));
+                      });
+          })
+          .done(function() { 
+              references.forEach(element => {
+                var table = document.getElementById("references");
+                var row = table.insertRow(table.rows.length);
+
+                var authors  = document.createTextNode(element[0]);
+                var title  = document.createTextNode(element[1]);
+                var year  = document.createTextNode(element[2]);
+
+
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                var cell3 = row.insertCell(2);
+
+                cell1.setAttribute('style', "width: 10%");
+                cell2.setAttribute('style', "width: 40%");
+                cell3.setAttribute('style', "width: 50%");
+
+                cell1.appendChild(year);
+                cell2.appendChild(authors);
+                cell3.appendChild(title);
+              });
+           });
+      });
+
   });
 </script>
 
@@ -52,11 +99,21 @@
       <form method="post" action="{% url 'add to library' %}">
         {% csrf_token %} {{ form.non_field_errors }}
         <input type="hidden" id="pk" name="pk" value={{ article.id }}>
-        {% if article.user_article %}
-        <button type="button" class="btn btn-secondary" id="library_save_{{ article.id }}" title="Save"> Saved</button>
-        {% else %}
-        <button class="btn btn-primary" id="library_save_{{ article.id }}" title="Save"> Save</button>
+        {% if arxiv_id != None %}
+        <div class="row mt-2">
+            <button type="button" class="btn btn-primary" id="arxiv" title="Save">Load references</button>
+        </div>
+        <div class="row mt-2">
+            <table class="table table-hover" id='references'></table>
+        </div>
         {% endif %}
+          <div class="row mt-2">
+          {% if article.user_article %}
+          <button type="button" class="btn btn-secondary" id="library_save_{{ article.id }}" title="Save"> Saved</button>
+          {% else %}
+          <button class="btn btn-primary" id="library_save_{{ article.id }}" title="Save"> Save</button>
+          {% endif %}
+        </div>
       </form>
     </div>
   </div>
