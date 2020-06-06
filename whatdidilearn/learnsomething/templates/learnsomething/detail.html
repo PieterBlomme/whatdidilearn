@@ -51,7 +51,7 @@
     $('#arxiv').click(function () {
           var references = [];
 
-          $.getJSON('https://api.semanticscholar.org/v1/paper/arXiv:' + {{ arxiv_id }}, function(data){
+          $.getJSON('https://api.semanticscholar.org/v1/paper/arXiv:{{ arxiv_id }}', function(data){
               data.references.forEach(element => {
                         references.push(reference_to_string(element));
                       });
