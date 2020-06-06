@@ -229,9 +229,9 @@
                 {% csrf_token %} {{ form.non_field_errors }}
             <p>
               <input type="hidden" id="pk" name="pk" value={{ article.id }}>
-              <input type="text" class="form-control" placeholder="Dataset" name="dataset" id="dataset" equired autofocus>
+              <input type="text" class="form-control" placeholder="Dataset" name="dataset" id="dataset" required autofocus>
               <input type="number" step="0.01" class="form-control" placeholder="Score" name="score" id="score" required autofocus>
-              <input type="url" class="form-control input-lg" placeholder="Code URL" name="url" id="url" required autofocus>
+              <input type="url" class="form-control input-lg" placeholder="Code URL" name="url" id="url" autofocus>
               <input type="checkbox" class="form-control-input" name="private" id="private">
               <label class="form-control-label" for="private">Private</label>
             </p>
