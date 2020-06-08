@@ -177,6 +177,7 @@
       <div class="card h-100 w-100">
         <div class="card-body">
             <form method="post" id="form" action="{% url 'add comment' %}">
+              <p>
                 {% csrf_token %} {{ form.non_field_errors }}
               <!-- Initialize Quill editor -->
               <input type="hidden" id="pk" name="pk" value={{ article.id }}>
@@ -191,6 +192,7 @@
               <input type="checkbox" class="form-control-input" name="private" id="private">
               <label class="form-control-label" for="private">Private</label>
             <button class="btn btn-primary btn-sm" id="" title="Add">Add</button>
+            </p>
           </form>
           <script>
               var quill = new Quill('#editor', {
