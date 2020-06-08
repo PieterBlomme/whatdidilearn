@@ -17,7 +17,6 @@
               title = data.title;
               abstract = data.abstract;
               data.authors.forEach(element => {
-                        console.log(element.name);
                         authors.push(element.name);
                       });
           })
@@ -25,10 +24,20 @@
               document.getElementById("title").value = title;
               document.getElementById("abstract").value = abstract;
               document.getElementById("authors").value = authors.join(', ');
-           });;
+           });
 
-
-          
+          var arxiv_landingpage = "http://export.arxiv.org/api/query?id_list=" + arxiv_id;
+          $.ajax({
+            type: 'GET',
+            crossDomain: true,
+            dataType: 'xml',
+            url: arxiv_landingpage,
+            success: function(xml){
+              published = $(xml).find('published')[0].textContent;
+              published = published.substring(0, 10);
+              document.getElementById("date").value = published;
+            }
+          });
 
         }
 
