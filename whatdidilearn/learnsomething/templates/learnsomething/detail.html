@@ -167,8 +167,8 @@
             </button>
             {% endif %}
             <h4>{{ comment.title}}</h4>
-            <pre>{{ comment.text }}</pre>
-            <a href="{{ comment.code_url}}">{{ comment.code_url }}</a>
+            {{ comment.text |safe }}
+            <a href="{{ coment.code_url}}">{{ comment.code_url }}</a>
         </div>
       </div>
     </div>
@@ -176,18 +176,31 @@
     <div class="row mt-3">
       <div class="card h-100 w-100">
         <div class="card-body">
-            <form method="post" action="{% url 'add comment' %}">
+            <form method="post" id="form" action="{% url 'add comment' %}">
                 {% csrf_token %} {{ form.non_field_errors }}
-            <p>
+              <!-- Initialize Quill editor -->
               <input type="hidden" id="pk" name="pk" value={{ article.id }}>
               <input type="text" class="form-control input-lg" placeholder="Title" name="title" id="title" required autofocus>
-              <textarea class="form-control rounded-0" id="exampleFormControlTextarea1" rows="10" placeholder="Enter comment here" name="text" id="text"></textarea>
+              <!-- Create the editor container -->
+              <div id="editor" style="height: 100px">
+                <p>Enter comment here</p>
+              </div>
+
+              <textarea style="display:none" name="text" id="text"></textarea>
               <input type="url" class="form-control input-lg" placeholder="Code URL" name="url" id="url" autofocus>
               <input type="checkbox" class="form-control-input" name="private" id="private">
               <label class="form-control-label" for="private">Private</label>
-            </p>
             <button class="btn btn-primary btn-sm" id="" title="Add">Add</button>
           </form>
+          <script>
+              var quill = new Quill('#editor', {
+                theme: 'snow'
+              });
+              $("#form").on("submit",function(){
+                $("#text").val(quill.root.innerHTML);
+              })
+          </script>
+
         </div>
       </div>
     </div>
