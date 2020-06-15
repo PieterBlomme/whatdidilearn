@@ -78,8 +78,11 @@
                   cell1.appendChild(year);
                   cell2.appendChild(authors);
                   cell3.appendChild(title);
+                  
                 });
+                
             });
+            this.innerHTML = "Hide references";
           }
           else
           {
@@ -88,6 +91,7 @@
                 table.deleteRow(0);
             }
             references = [];
+            this.innerHTML = "Show references";
           }
 
       });
@@ -112,7 +116,7 @@
         <input type="hidden" id="pk" name="pk" value={{ article.id }}>
         {% if arxiv_id != None %}
         <div class="row mt-2">
-            <button type="button" class="btn btn-primary" id="arxiv" title="Save">Show/hide references</button>
+            <button type="button" class="btn btn-primary" id="arxiv" title="Save">Show references</button>
         </div>
         <div class="row mt-2">
             <table class="table table-hover" id='references'></table>
