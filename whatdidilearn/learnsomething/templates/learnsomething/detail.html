@@ -3,8 +3,13 @@
 
 <!--close events-->
 <script>
+  //5 most similar from Arxiv Sanity
+  {{ arxiv_sanity |safe }}
+  similar = arxiv_sanity_similar.slice(1, 6);
+
   $(document).ready(function () {
     var show_all = {{ show_all }} ;
+    var references = [];
 
     $('button.close').click(function () {
       var res = this.id.split("_");
@@ -49,36 +54,95 @@
     }
 
     $('#arxiv').click(function () {
-          var references = [];
+          if (references.length == 0) 
+          {
+            $.getJSON('https://api.semanticscholar.org/v1/paper/arXiv:{{ arxiv_id }}', function(data){
+                data.references.forEach(element => {
+                          references.push(reference_to_string(element));
+                        });
+            })
+            .done(function() { 
+                references.forEach(element => {
+                  var table = document.getElementById("references");
+                  var row = table.insertRow(table.rows.length);
 
-          $.getJSON('https://api.semanticscholar.org/v1/paper/arXiv:{{ arxiv_id }}', function(data){
-              data.references.forEach(element => {
-                        references.push(reference_to_string(element));
-                      });
-          })
-          .done(function() { 
-              references.forEach(element => {
-                var table = document.getElementById("references");
-                var row = table.insertRow(table.rows.length);
-
-                var authors  = document.createTextNode(element[0]);
-                var title  = document.createTextNode(element[1]);
-                var year  = document.createTextNode(element[2]);
+                  var authors  = document.createTextNode(element[0]);
+                  var title  = document.createTextNode(element[1]);
+                  var year  = document.createTextNode(element[2]);
 
 
-                var cell1 = row.insertCell(0);
-                var cell2 = row.insertCell(1);
-                var cell3 = row.insertCell(2);
+                  var cell1 = row.insertCell(0);
+                  var cell2 = row.insertCell(1);
+                  var cell3 = row.insertCell(2);
 
-                cell1.setAttribute('style', "width: 10%");
-                cell2.setAttribute('style', "width: 40%");
-                cell3.setAttribute('style', "width: 50%");
+                  cell1.setAttribute('style', "width: 10%");
+                  cell2.setAttribute('style', "width: 40%");
+                  cell3.setAttribute('style', "width: 50%");
 
-                cell1.appendChild(year);
-                cell2.appendChild(authors);
-                cell3.appendChild(title);
-              });
-           });
+                  cell1.appendChild(year);
+                  cell2.appendChild(authors);
+                  cell3.appendChild(title);
+                  
+                });
+                
+            });
+            this.innerHTML = "Hide references";
+          }
+          else
+          {
+            var table = document.getElementById("references");
+            for (var i = 0; i < references.length; i++) {
+                table.deleteRow(0);
+            }
+            references = [];
+            this.innerHTML = "Show references";
+          }
+
+      });
+
+    $('#arxivsanity').click(function () {
+          var table = document.getElementById("similar");
+          var tableRows = table.getElementsByTagName('tr');
+          var rowCount = tableRows.length;
+          if (rowCount == 0) 
+          {
+            similar.forEach(element => {
+                  
+                  var row = table.insertRow(table.rows.length);
+
+                  var a = document.createElement('a');
+                  var authors  = document.createTextNode(element.authors);
+                  var title  = document.createTextNode(element.title);
+                  var date  = document.createTextNode(element.originally_published_time);
+                  var url  = document.createTextNode(element.link);
+
+                  a.appendChild(title);
+                  a.title = title;
+                  a.href = url;
+
+
+                  var cell1 = row.insertCell(0);
+                  var cell2 = row.insertCell(1);
+                  var cell3 = row.insertCell(2);
+
+                  cell1.setAttribute('style', "width: 10%");
+                  cell2.setAttribute('style', "width: 40%");
+                  cell3.setAttribute('style', "width: 50%");
+
+                  cell1.appendChild(date);
+                  cell2.appendChild(authors);
+                  cell3.appendChild(a);
+                });
+            this.innerHTML = "Hide Arxiv Sanity most similar";
+          }
+          else
+          {
+            for (var i = 0; i < rowCount; i++) {
+                table.deleteRow(0);
+            }
+            this.innerHTML = "Show Arxiv Sanity most similar";
+          }
+
       });
 
   });
@@ -101,10 +165,17 @@
         <input type="hidden" id="pk" name="pk" value={{ article.id }}>
         {% if arxiv_id != None %}
         <div class="row mt-2">
-            <button type="button" class="btn btn-primary" id="arxiv" title="Save">Load references</button>
+            <button type="button" class="btn btn-primary" id="arxiv" title="Save">Show references</button>
         </div>
+
         <div class="row mt-2">
             <table class="table table-hover" id='references'></table>
+        </div>
+        <div class="row mt-2">
+            <button type="button" class="btn btn-primary" id="arxivsanity" title="Save">Show Arxiv Sanity most similar</button>
+        </div>
+        <div class="row mt-2">
+            <table class="table table-hover" id='similar'></table>
         </div>
         {% endif %}
           <div class="row mt-2">
