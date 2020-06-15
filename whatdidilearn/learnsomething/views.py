@@ -7,6 +7,11 @@ from .forms import RegisterForm
 from .models import *
 from datetime import datetime
 from django.db.models import Exists, OuterRef, BooleanField, Value, Q
+from lxml import html
+from lxml.etree import ParserError
+import requests
+
+from .utils import get_arxiv_sanity_array
 
 def signup(request):
     if request.method == 'POST':
@@ -231,10 +236,9 @@ def delete_comment(request, pk_paper, pk):
 
     return redirect('detail', pk=pk_paper)
 
+
 class ArticleDetailView(View):
     def get(self, request, *args, **kwargs):
-        
-
         user = request.user
         article = get_object_or_404(Article, pk=kwargs['pk'])
 
@@ -277,6 +281,17 @@ class ArticleDetailView(View):
         else:
             arxiv_id = None
 
+        #arxiv sanity most similar
+        try:
+            page = requests.get(f"http://www.arxiv-sanity.com/{arxiv_id}")
+            tree = html.fromstring(page.content)
+            scripts = tree.xpath('//*/script')
+            for script in scripts:
+                if '// passed in from flask as json' in script.text_content():
+                    arxiv_sanity = get_arxiv_sanity_array(script.text_content())
+        except ParserError:
+            arxiv_sanity = ""
+
         context = {'article': article, 'tags' : tags, 'benchmarks' : benchmarks, 'comments' : comments, 
-                            'show_all' : show_all, 'arxiv_id' : arxiv_id}
+                            'show_all' : show_all, 'arxiv_id' : arxiv_id, 'arxiv_sanity' : arxiv_sanity}
         return render(request, 'learnsomething/detail.html', context)
