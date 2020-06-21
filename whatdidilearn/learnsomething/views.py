@@ -234,7 +234,6 @@ class ArticleDetailView(View):
             article.user_article = False
 
         show_all = self.request.GET.get('show_all', 0)
-
         tags = Tag.objects.filter(paper_id=article)
 
         #Get all comments/benchmarks that are non private or from user
@@ -281,7 +280,16 @@ class ArticleDetailView(View):
         except ParserError:
             arxiv_sanity = ""
 
+        #dropdown soft-suggest
+        if request.user.is_authenticated:
+            dropdown_benchmarks = Benchmark.objects.filter(Q(user=user) | Q(private=False))
+        else:
+            dropdown_benchmarks = Benchmark.objects.filter(private=False)
+        dropdown_benchmarks = dropdown_benchmarks.values('dataset').distinct()
+        dropdown_tags = Tag.objects.values('tag').distinct()
+
         context = {'article': article, 'tags' : tags, 'benchmarks' : benchmarks, 'comments' : comments, 
                             'show_all' : show_all, 'arxiv_id' : arxiv_id, 'references' : references, 
-                            'arxiv_sanity' : arxiv_sanity}
+                            'arxiv_sanity' : arxiv_sanity, 'dropdown_benchmarks' : dropdown_benchmarks,
+                            'dropdown_tags' : dropdown_tags}
         return render(request, 'learnsomething/detail.html', context)

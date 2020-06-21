@@ -9,6 +9,9 @@
   //References
   var references = {{ references |safe }};
 
+  var dropdown_tags = {{dropdown_tags|safe}};
+  var dropdown_benchmarks = {{dropdown_benchmarks|safe}};
+
   $(document).ready(function () {
     var show_all = {{ show_all }} ;
 
@@ -194,7 +197,13 @@
       {% csrf_token %} {{ form.non_field_errors }}
       <div class="row mt-3"></div>
       <input type="hidden" id="pk" name="pk" value={{ article.id }}>
-      <input type="text" class="form-control input-sm" placeholder="Add tag" required autofocus name="tag" id="tag">
+      <input type="text" list="taglist" class="form-control input-sm" placeholder="Add tag" 
+              required autofocus name="tag" id="tag">
+      <datalist id="taglist">
+        {% for tag in dropdown_tags %}
+        <option value="{{tag.tag}}">
+        {% endfor %}
+      </datalist>
       <button class="btn btn-primary btn-sm" id="" title="Add">Add</button>
 
     </form>
@@ -298,7 +307,13 @@
                 {% csrf_token %} {{ form.non_field_errors }}
             <p>
               <input type="hidden" id="pk" name="pk" value={{ article.id }}>
-              <input type="text" class="form-control" placeholder="Dataset" name="dataset" id="dataset" required autofocus>
+              <input type="text" list="benchmarklist" class="form-control" placeholder="Dataset" 
+                        name="dataset" id="dataset" required autofocus>
+              <datalist id="benchmarklist">
+                {% for benchmark in dropdown_benchmarks %}
+                <option value="{{benchmark.dataset}}">
+                {% endfor %}
+              </datalist>
               <input type="number" step="0.01" class="form-control" placeholder="Score" name="score" id="score" required autofocus>
               <input type="url" class="form-control input-lg" placeholder="Code URL" name="url" id="url" autofocus>
               <input type="checkbox" class="form-control-input" name="private" id="private">
