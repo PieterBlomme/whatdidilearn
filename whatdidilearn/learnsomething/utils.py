@@ -1,3 +1,5 @@
+from .models import *
+
 def get_arxiv_sanity_array(script_content):
     capture = False
     text = ''
