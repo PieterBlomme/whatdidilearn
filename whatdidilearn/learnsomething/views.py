@@ -11,7 +11,7 @@ from lxml import html
 from lxml.etree import ParserError
 import requests
 
-from .utils import get_arxiv_sanity_array, search_helper
+from .utils import get_arxiv_sanity_array, search_helper, get_references
 
 def signup(request):
     if request.method == 'POST':
@@ -266,6 +266,10 @@ class ArticleDetailView(View):
         else:
             arxiv_id = None
 
+        #Arxiv referrences
+        page = requests.get(f'https://api.semanticscholar.org/v1/paper/arXiv:{arxiv_id}')
+        references = get_references(page.json())
+
         #arxiv sanity most similar
         try:
             page = requests.get(f"http://www.arxiv-sanity.com/{arxiv_id}")
@@ -278,5 +282,6 @@ class ArticleDetailView(View):
             arxiv_sanity = ""
 
         context = {'article': article, 'tags' : tags, 'benchmarks' : benchmarks, 'comments' : comments, 
-                            'show_all' : show_all, 'arxiv_id' : arxiv_id, 'arxiv_sanity' : arxiv_sanity}
+                            'show_all' : show_all, 'arxiv_id' : arxiv_id, 'references' : references, 
+                            'arxiv_sanity' : arxiv_sanity}
         return render(request, 'learnsomething/detail.html', context)

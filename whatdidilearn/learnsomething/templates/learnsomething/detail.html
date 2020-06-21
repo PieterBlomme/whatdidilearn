@@ -4,12 +4,13 @@
 <!--close events-->
 <script>
   //5 most similar from Arxiv Sanity
-  {{ arxiv_sanity |safe }}
+  var arxiv_sanity_similar = {{ arxiv_sanity |safe }}
   similar = arxiv_sanity_similar.slice(1, 6);
+  //References
+  var references = {{ references |safe }};
 
   $(document).ready(function () {
     var show_all = {{ show_all }} ;
-    var references = [];
 
     $('button.close').click(function () {
       var res = this.id.split("_");
@@ -40,35 +41,18 @@
 
     });
 
-    function reference_to_string(el)
-    {
-      var title = el.title;
-      var year = el.year;
-      var authors = [];
-
-      el.authors.forEach(element => {
-                        authors.push(element.name);
-                      });
-      authors = authors.join(', ');
-      return [authors, title, year]
-    }
-
     $('#arxiv').click(function () {
-          if (references.length == 0) 
+          var table = document.getElementById("references");
+          var tableRows = table.getElementsByTagName('tr');
+          var rowCount = tableRows.length;
+          if (rowCount == 0) 
           {
-            $.getJSON('https://api.semanticscholar.org/v1/paper/arXiv:{{ arxiv_id }}', function(data){
-                data.references.forEach(element => {
-                          references.push(reference_to_string(element));
-                        });
-            })
-            .done(function() { 
-                references.forEach(element => {
-                  var table = document.getElementById("references");
+              references.forEach(element => {
                   var row = table.insertRow(table.rows.length);
 
-                  var authors  = document.createTextNode(element[0]);
-                  var title  = document.createTextNode(element[1]);
-                  var year  = document.createTextNode(element[2]);
+                  var authors  = document.createTextNode(element.authors.join(', '));
+                  var title  = document.createTextNode(element.title);
+                  var year  = document.createTextNode(element.year);
 
 
                   var cell1 = row.insertCell(0);
@@ -84,8 +68,6 @@
                   cell3.appendChild(title);
                   
                 });
-                
-            });
             this.innerHTML = "Hide references";
           }
           else

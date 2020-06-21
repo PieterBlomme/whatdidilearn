@@ -1,11 +1,26 @@
 from .models import *
 
+def get_references(script_content):
+    try:
+        refs = []
+        for ref in script_content['references']:
+            d_ref = {
+                'title' : ref['title'],
+                'year' : ref['year'],
+                'authors' : [a['name'] for a in ref['authors']],
+            }
+            refs.append(d_ref)
+
+        return refs
+    except:
+        return None
+
 def get_arxiv_sanity_array(script_content):
     capture = False
     text = ''
     for line in script_content.splitlines():
         if line.startswith('var papers'):
-            line = line.replace('var papers', 'var arxiv_sanity_similar')
+            line = line.replace('var papers = ', '')
             capture = True
         if line.startswith('var pid_to_users'):
             capture = False
