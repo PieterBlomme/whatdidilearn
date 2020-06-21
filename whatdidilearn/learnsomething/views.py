@@ -11,7 +11,7 @@ from lxml import html
 from lxml.etree import ParserError
 import requests
 
-from .utils import get_arxiv_sanity_array
+from .utils import get_arxiv_sanity_array, search_helper
 
 def signup(request):
     if request.method == 'POST':
@@ -26,21 +26,6 @@ def signup(request):
     else:
         form = RegisterForm()
     return render(request, 'learnsomething/signup.html', {'form': form})
-
-def search_helper(articles, POST):
-    if 'search_article' in POST:
-        search_string = POST['search_article']
-        articles = articles.filter(title__icontains=search_string) | articles.filter(authors__icontains=search_string) | articles.filter(abstract__icontains=search_string)
-    if 'search_tag' in POST:
-        search_string = POST['search_tag']
-        tags = Tag.objects.filter(tag__icontains=search_string).values_list('paper', flat=True)
-        articles = articles.filter(id__in=tags)
-    if 'search_benchmark' in POST:
-        search_string = POST['search_benchmark']
-        benchmarks = Benchmark.objects.filter(dataset__icontains=search_string).values_list('paper', flat=True)
-        articles = articles.filter(id__in=benchmarks)
-
-    return articles.order_by('-date')
 
 def home(request):
     #search filter
