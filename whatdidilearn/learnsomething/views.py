@@ -11,7 +11,7 @@ from lxml import html
 from lxml.etree import ParserError
 import requests
 
-from .utils import get_arxiv_sanity_array
+from .utils import get_arxiv_sanity_array, search_helper, get_references
 
 def signup(request):
     if request.method == 'POST':
@@ -26,21 +26,6 @@ def signup(request):
     else:
         form = RegisterForm()
     return render(request, 'learnsomething/signup.html', {'form': form})
-
-def search_helper(articles, POST):
-    if 'search_article' in POST:
-        search_string = POST['search_article']
-        articles = articles.filter(title__icontains=search_string) | articles.filter(authors__icontains=search_string) | articles.filter(abstract__icontains=search_string)
-    if 'search_tag' in POST:
-        search_string = POST['search_tag']
-        tags = Tag.objects.filter(tag__icontains=search_string).values_list('paper', flat=True)
-        articles = articles.filter(id__in=tags)
-    if 'search_benchmark' in POST:
-        search_string = POST['search_benchmark']
-        benchmarks = Benchmark.objects.filter(dataset__icontains=search_string).values_list('paper', flat=True)
-        articles = articles.filter(id__in=benchmarks)
-
-    return articles.order_by('-date')
 
 def home(request):
     #search filter
@@ -249,7 +234,6 @@ class ArticleDetailView(View):
             article.user_article = False
 
         show_all = self.request.GET.get('show_all', 0)
-
         tags = Tag.objects.filter(paper_id=article)
 
         #Get all comments/benchmarks that are non private or from user
@@ -281,6 +265,10 @@ class ArticleDetailView(View):
         else:
             arxiv_id = None
 
+        #Arxiv referrences
+        page = requests.get(f'https://api.semanticscholar.org/v1/paper/arXiv:{arxiv_id}')
+        references = get_references(page.json())
+
         #arxiv sanity most similar
         try:
             page = requests.get(f"http://www.arxiv-sanity.com/{arxiv_id}")
@@ -292,6 +280,16 @@ class ArticleDetailView(View):
         except ParserError:
             arxiv_sanity = ""
 
+        #dropdown soft-suggest
+        if request.user.is_authenticated:
+            dropdown_benchmarks = Benchmark.objects.filter(Q(user=user) | Q(private=False))
+        else:
+            dropdown_benchmarks = Benchmark.objects.filter(private=False)
+        dropdown_benchmarks = dropdown_benchmarks.values('dataset').distinct()
+        dropdown_tags = Tag.objects.values('tag').distinct()
+
         context = {'article': article, 'tags' : tags, 'benchmarks' : benchmarks, 'comments' : comments, 
-                            'show_all' : show_all, 'arxiv_id' : arxiv_id, 'arxiv_sanity' : arxiv_sanity}
+                            'show_all' : show_all, 'arxiv_id' : arxiv_id, 'references' : references, 
+                            'arxiv_sanity' : arxiv_sanity, 'dropdown_benchmarks' : dropdown_benchmarks,
+                            'dropdown_tags' : dropdown_tags}
         return render(request, 'learnsomething/detail.html', context)
